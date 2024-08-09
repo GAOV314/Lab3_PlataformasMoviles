@@ -54,7 +54,7 @@ class Calculator {
                     }
                     stack.removeAt(stack.size - 1) // Remove '('
                 }
-                char in listOf('+', '-', '*', '/', '^') -> {
+                char in listOf('+', '-', '*', '/', '^', '√') -> {
                     while (stack.isNotEmpty() && priority(char) <= priority(stack.last())) {
                         result.append(stack.removeAt(stack.size - 1)).append(' ')
                     }
@@ -84,23 +84,28 @@ class Calculator {
             when {
                 token.toDoubleOrNull() != null -> stack.add(token.toDouble())
                 token in listOf("+", "-", "*", "/", "^", "√") -> {
-                    val b = stack.removeAt(stack.size - 1)
-                    val a = stack.removeAt(stack.size - 1)
-                    val result = when (token) {
-                        "+" -> a + b
-                        "-" -> a - b
-                        "*" -> a * b
-                        "/" -> a / b
-                        "^" -> Math.pow(a, b)
-                        "√" -> Math.sqrt(a)
-                        else -> 0.0
+                    if (token == "√") {
+                        val a = stack.removeAt(stack.size - 1)
+                        stack.add(Math.sqrt(a))
+                    } else {
+                        val b = stack.removeAt(stack.size - 1)
+                        val a = stack.removeAt(stack.size - 1)
+                        val result = when (token) {
+                            "+" -> a + b
+                            "-" -> a - b
+                            "*" -> a * b
+                            "/" -> a / b
+                            "^" -> Math.pow(a, b)
+                            else -> 0.0
+                        }
+                        stack.add(result)
                     }
-                    stack.add(result)
                 }
             }
         }
 
         return stack.last()
     }
+
 
 }
